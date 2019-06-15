@@ -14,7 +14,7 @@ var server = http.createServer((req,res)=>{
 		}
 		if(stats.isFile()){//如果是文件
 			res.statusCode = 200;
-			res.setHeader('Content-Type','text/html;charset=UTF-8');
+			res.setHeader('Content-Type',`${req.headers['accept'].split(',')[0]};charset=UTF-8`);
 			fs.createReadStream(filePath).pipe(res);//以流的方式来读取文件
 		}else if (stats.isDirectory()) {//如果是文件夹，拿到文件列表
 			fs.readdir(filePath,(err,files)=>{//files是个数组

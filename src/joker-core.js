@@ -11,23 +11,40 @@ const THEME_DIR = path.join('.', 'theme', context.config['theme']);
 
 const layout = {
     post: path.join(THEME_DIR, 'layout', 'post.ejs'),
-    index: path.join(THEME_DIR, 'layout', 'index.ejs')
+    index: path.join(THEME_DIR, 'layout', 'index.ejs'),
+    layout: path.join(THEME_DIR, 'layout', 'layout.ejs')
 };
 
-function render(src, dest, context) {
+function _render(src, dest, context) {
     let data = ejs.render(fs.readFileSync(src).toString(), context);
     fs.writeFileSync(dest, data);
 }
 
+function render(dest) {
+    _render(layout.layout, dest, context);
+}
+
+
 function build() {
+    /**
+     * 渲染首页
+     */
+    context.body = ejs.render(fs.readFileSync(layout.index).toString(), context);
+    render(path.join(PUBLIC_DIR, 'index.html'));
+
+    /**
+     * 渲染博文
+     */
     let names = fs.readdirSync(POST_DIR);
     names.forEach((name, index) => {
         let file = path.join(POST_DIR, name);
         parser.parsePost(file, (info, content) => {
-            context['post'] = yaml.parse(info);
-            context['post'].content = content;
+            context.post = yaml.parse(info);
+            context.post.content = content;
+            context.body = ejs.render(fs.readFileSync(layout.post).toString(), context);
             let i = name.lastIndexOf(".");
-            render(layout.post, path.join(PUBLIC_DIR, 'posts', name.substring(0, i)+'.html'), context);
+            let _path = path.join(PUBLIC_DIR, 'posts', name.substring(0, i)+'.html');
+            render(_path);
         });
     });
 }

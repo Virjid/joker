@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+const colors = require('colors');
 const yargs = require('yargs');
 const core = require('../src/joker-core');
 const server = require('../src/joker-server').server;
@@ -6,8 +7,36 @@ const server = require('../src/joker-server').server;
 const argv = yargs.argv;
 const command = argv._[0];
 
+
+const banner = 
+`
+    _____      
+    (, /     /)         
+      /  ___(/_   _  __ 
+  ___/__(_) /(___(/_/ (_
+/   /                   
+(__/                          by Virjid                     
+`;
+
 if (command === 'build') {
+    console.log(colors.cyan(banner));
     core.build();
 } else if (command === 'server') {
-    server.listen(5000, '127.0.0.1');
+    console.log(colors.cyan(banner));
+    console.log(colors.green('[INFO]'), 'Joker-server is starting...');
+    server.listen(argv['port']||4000, argv['address']||'localhost', (error)=>{
+        console.log(colors.green('[INFO]'), `port => ${argv['port']||4000}`);
+        console.log(colors.green('[INFO]'), `address => ${argv['address']||'localhost'}`);
+        if (error) {
+            console.error(colors.red([ERROR]), error);
+        }
+        console.log(colors.cyan(`http://${argv['address']||'localhost'}:${argv['port']||4000}`));
+        console.log(colors.cyan('you can input ^C to close the server.'));
+        process.on('SIGINT', function () {
+            console.log('\nSee you~');
+            process.exit();
+        });
+    });
+} else if (command === 'init'||'i') {
+    
 }
