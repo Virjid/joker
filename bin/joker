@@ -1,0 +1,13 @@
+#!/usr/bin/env node
+const yargs = require('yargs');
+const core = require('../src/joker-core');
+const server = require('../src/joker-server').server;
+
+const argv = yargs.argv;
+const command = argv._[0];
+
+if (command === 'build') {
+    core.build();
+} else if (command === 'server') {
+    server.listen(5000, '127.0.0.1');
+}
