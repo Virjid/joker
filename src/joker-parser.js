@@ -1,29 +1,26 @@
 const fs = require('fs');
-const yaml = require('yamljs');
 const readline = require('readline');
 
 
 module.exports = {
     parsePost(file, handler) {
-        const rl = readline.createInterface({
-            input: fs.createReadStream(file)
-        });
+        let raw = fs.readFileSync(file).toString();
         let count = 0;
         let info = '';
         let content = '';
-        rl.on('line', function(line){ //事件监听
-            if (count == 2) {
-                content = content+line+"\n";
-                return;
-            }
-            if (line.trim()==='---' && count<2) count++;
-            else {
-                info = info+line+"\n";
-            }
-        });
 
-        rl.on('close', ()=>{
-            handler(info, content);
-        });
+        let lines = raw.split('\n');
+        for (let i = 0; i < lines.length; i++) {
+            if (count >= 2) {
+                content = content+lines[i]+"\n";
+                continue;
+            }
+            if (lines[i].trim()==='---' && count<2) count++;
+            else {
+                info = info+lines[i]+"\n";
+            }
+        }
+
+        handler(info, content);
     }
 }

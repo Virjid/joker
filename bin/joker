@@ -3,6 +3,7 @@ const colors = require('colors');
 const yargs = require('yargs');
 const core = require('../src/joker-core');
 const server = require('../src/joker-server').server;
+const global = require('../src/global');
 
 const argv = yargs.argv;
 const command = argv._[0];
@@ -28,7 +29,7 @@ if (command === 'build') {
         console.log(colors.green('[INFO]'), `port => ${argv['port']||4000}`);
         console.log(colors.green('[INFO]'), `address => ${argv['address']||'localhost'}`);
         if (error) {
-            console.error(colors.red([ERROR]), error);
+            console.error(colors.red('[ERROR]'), error);
         }
         console.log(colors.cyan(`http://${argv['address']||'localhost'}:${argv['port']||4000}`));
         console.log(colors.cyan('you can input ^C to close the server.'));
@@ -37,6 +38,6 @@ if (command === 'build') {
             process.exit();
         });
     });
-} else if (command === 'init'||'i') {
+} else if (command === 'init') {
     
 }
